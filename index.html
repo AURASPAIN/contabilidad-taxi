@@ -78,6 +78,8 @@ button.cancel-btn, button.export-btn, button.gps-btn { width: 100%; padding: 18p
 .badge-trend { padding: 6px 12px; border-radius: 8px; font-size: 14px; font-weight: bold; display: inline-block; margin: 0 6px; }
 .oracle-box { background: #fff3cd; border: 1px solid #ffeeba; padding: 18px; border-radius: 12px; text-align: left; margin-top: 18px; font-size: 15px; color: #856404;}
 .oracle-box b { font-size: 18px; display: block; margin-top: 7px; color: #d35400;}
+
+/* Goal Progress Bar */
 .goal-container { background: white; border-radius: 14px; padding: 18px; margin-bottom: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
 .goal-header { display: flex; justify-content:space-between; font-size: 14px; font-weight: bold; color: #555; margin-bottom: 10px;}
 .goal-bar-bg { width: 100%; background: #eee; height: 14px; border-radius: 7px; overflow: hidden; position: relative;}
@@ -270,7 +272,7 @@ let zonasGlobal = [];
 
 let estaEnviando = false; 
 let enviandoGasto = false; 
-let enviandoZona = false; // ESCUDO PARA EL GPS
+let enviandoZona = false; 
 let currentZonaId = null;
 
 let map = null;
@@ -518,7 +520,10 @@ function exportarGestoria() {
 
 function registrarZonaCaliente() {
     if (!navigator.geolocation) return alert("Tu navegador no soporta geolocalización.");
-    if (enviandoZona) return; // ESCUDO BOTON GPS
+    
+    // 🛡️ EL CERROJO ACTÚA INMEDIATAMENTE
+    if (enviandoZona) return; 
+    enviandoZona = true; 
     
     let btn = document.getElementById("btn-gps"); 
     btn.innerText = "🛰️..."; btn.disabled = true;
@@ -528,7 +533,6 @@ function registrarZonaCaliente() {
     }
     
     navigator.geolocation.getCurrentPosition(pos => {
-        enviandoZona = true;
         let latStr = pos.coords.latitude.toString();
         let lngStr = pos.coords.longitude.toString();
         
@@ -546,7 +550,7 @@ function registrarZonaCaliente() {
         .then(() => { 
             alert("📍 ¡ZONA ORO GUARDADA!"); 
             btn.innerText = "📍 ZONA GUARDADA"; 
-            currentZonaId = null; // Reiniciar escudo si ha ido bien
+            currentZonaId = null; 
             enviandoZona = false;
             setTimeout(()=> {btn.innerText = "🏆 ZONA ORO"; btn.disabled=false;}, 3000); 
             cargarDatos(); 
@@ -559,6 +563,7 @@ function registrarZonaCaliente() {
     }, err => { 
         alert("Activa el GPS del móvil."); 
         btn.disabled = false; btn.innerText = "🏆 ZONA ORO"; 
+        enviandoZona = false;
     }, {enableHighAccuracy: true});
 }
 
