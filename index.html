@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>TaxiApp Pro CEO</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1a1a1a">
+
+<style>
+.nav-item:focus {
+    outline: 2px solid var(--accent);
+    background: #fffbe6;
+}
+.main-btn:active {
+    background: linear-gradient(90deg, #f1c40f 0%, #ffd700 100%);
+    color: #d35400;
+}
+.cancel-btn:active {
+    background: #c0392b;
+}
+.export-btn:active {
+    background: #217dbb;
+}
+.gps-btn:active {
+    background: #8e44ad;
+}
+
+/* Apple Premium & Professional Style */
+:root {
+    --primary: #181818;
+    --accent: #ffd700;
+    --text-dark: #222;
+    --bg: #f5f6fa;
+    --card-bg: #fff;
+    --shadow: 0 8px 32px rgba(0,0,0,0.08);
+    --border: 1px solid #ececec;
+    --input-bg: #f8fafc;
+    --input-border: 1px solid #e0e0e0;
+    --input-focus: #ffd700;
+}
+body {
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    margin: 0;
+    padding-bottom: 90px;
+    color: var(--text-dark);
+    -webkit-tap-highlight-color: transparent;
+}
+.header {
+    background: var(--primary);
+    color: var(--accent);
+    padding: 18px 20px;
+    text-align: center;
+    font-weight: 900;
+    font-size: 22px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    letter-spacing: 1px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.container {
+    padding: 24px 12px 0 12px;
+    max-width: 650px;
+    margin: auto;
+}
+.card {
+    background: var(--card-bg);
+    padding: 24px 20px;
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    margin-bottom: 24px;
+    border: var(--border);
+    transition: box-shadow 0.2s;
+}
+.card:hover {
+    box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+}
+.card-title {
+    font-size: 16px;
+    font-weight: 900;
+    color: var(--primary);
+    margin-top: 0;
+    margin-bottom: 18px;
+    text-transform: uppercase;
+    border-bottom: 2px solid #f7f7f7;
+    padding-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+.grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+}
+label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #888;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+}
+input, select {
+    width: 100%;
+    padding: 16px;
+    border: var(--input-border);
+    border-radius: 12px;
+    margin-bottom: 16px;
+    box-sizing: border-box;
+    font-size: 17px;
+    background: var(--input-bg);
+    transition: border 0.2s, box-shadow 0.2s;
+    outline: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+input:focus, select:focus {
+    border-color: var(--input-focus);
+    box-shadow: 0 4px 16px rgba(255,215,0,0.08);
+}
+.dash {
+    background: var(--primary);
+    color: white;
+    padding: 18px 12px;
+    border-radius: 18px;
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+    margin-bottom: 18px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+}
+.dash div {
+    flex: 1;
+    border-right: 1px solid #333;
+    padding: 0 8px;
+}
+.dash div:last-child {
+    border-right: none;
+}
+.dash span {
+    font-size: 11px;
+    color: #ffd700;
+    display: block;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+}
+.dash b {
+    font-size: 24px;
+    color: white;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+.dash .highlight b { color: #2ecc71; }
+.dash .digital b { color: #3498db; }
+button.main-btn {
+    width: 100%;
+    padding: 22px;
+    background: linear-gradient(90deg, #ffd700 0%, #f1c40f 100%);
+    color: #181818;
+    border: none;
+    border-radius: 14px;
+    font-weight: 900;
+    font-size: 20px;
+    cursor: pointer;
+    margin-top: 12px;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 16px rgba(255,215,0,0.08);
+    transition: background 0.3s, color 0.3s;
+}
+button.main-btn:disabled {
+    background: #555;
+    color: #aaa;
+    cursor: not-allowed;
+}
+button.cancel-btn, button.export-btn, button.gps-btn {
+    width: 100%;
+    padding: 18px;
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-weight: 800;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 12px;
+}
+.cancel-btn { background: #e74c3c; display: none; }
+.export-btn { background: #3498db; margin-bottom: 24px; }
+.gps-btn { background: #9b59b6; margin-top: 0; padding: 12px; font-size: 15px; }
+.pantalla { display: none; }
+.pantalla.activa { display: block; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: white;
+    display: flex;
+    border-top: 1px solid #eaeaea;
+    padding-bottom: env(safe-area-inset-bottom);
+    z-index: 100;
+    box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+}
+.nav-item {
+    flex: 1;
+    text-align: center;
+    padding: 16px 0;
+    color: #b2bec3;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 900;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s, color 0.2s;
+}
+.nav-item.active {
+    color: var(--primary);
+    border-top: 4px solid var(--accent);
+    background: #fafafa;
+}
+.nav-icon { font-size: 24px; }
+.hist-card {
+    border-left: 6px solid var(--accent);
+    cursor: pointer;
+    transition: 0.2s;
+    overflow: hidden;
+    background: white;
+    margin-bottom: 14px;
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+}
+.hist-header { display: flex; justify-content: space-between; align-items: center; }
+.hist-header .info { font-size: 15px; color: #555; }
+.hist-header .date { font-size: 12px; color: #999; display: block; margin-top: 4px; }
+.hist-header .amount { font-size: 22px; font-weight: 900; color: var(--primary); }
+.hist-detalles { display: none; margin-top: 18px; padding-top: 18px; border-top: 1px solid #eee; grid-template-columns: 1fr 1fr; gap: 14px; font-size: 14px; }
+.hist-card.abierta .hist-detalles { display: grid; }
+.det-item { background: #f4f6f8; padding: 10px 12px; border-radius: 10px; color: #555; display: flex; justify-content: space-between; align-items: center;}
+.det-item span { font-weight: bold; color: var(--primary); }
+.det-full { grid-column: span 2; background: #fff3cd; border: 1px solid #ffeeba; }
+.btn-editar { width: 100%; grid-column: span 2; background: var(--primary); color: white; border: none; padding: 14px; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer; margin-top: 7px; }
+.mes-box { background: white; border-radius: 18px; padding: 32px; text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,0.08); margin-bottom: 24px;}
+.mes-box h2 { margin: 0; color: #7f8c8d; font-size: 16px; text-transform: uppercase;}
+.mes-box .total { font-size: 48px; font-weight: 900; color: var(--primary); margin: 12px 0 7px 0;}
+.mes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 24px; text-align: left;}
+.mes-stat { background: #f8fafc; padding: 18px; border-radius: 12px; border-left: 4px solid var(--primary);}
+.mes-stat small { color: #7f8c8d; font-size: 12px; font-weight: bold; display: block; text-transform: uppercase;}
+.mes-stat span { font-size: 22px; font-weight: 900; color: var(--primary);}
+.selector-estadisticas { border: 2px solid var(--primary); font-weight: 900; color: var(--primary); text-align: center; font-size: 18px; padding: 14px; border-radius: 14px; background: white; margin-bottom: 18px; width:100%;}
+.badge-trend { padding: 6px 12px; border-radius: 8px; font-size: 14px; font-weight: bold; display: inline-block; margin: 0 6px; }
+.oracle-box { background: #fff3cd; border: 1px solid #ffeeba; padding: 18px; border-radius: 12px; text-align: left; margin-top: 18px; font-size: 15px; color: #856404;}
+.oracle-box b { font-size: 18px; display: block; margin-top: 7px; color: #d35400;}
+
+/* Goal Progress Bar */
+.goal-container { background: white; border-radius: 14px; padding: 18px; margin-bottom: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
+.goal-header { display: flex; justify-content:space-between; font-size: 14px; font-weight: bold; color: #555; margin-bottom: 10px;}
+.goal-bar-bg { width: 100%; background: #eee; height: 14px; border-radius: 7px; overflow: hidden; position: relative;}
+.goal-bar-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.5s ease;}
+.zona-oro-btn { background: linear-gradient(90deg, #f1c40f 0%, #ffd700 100%); color: #1a1a1a !important; border: 2px solid #f1c40f; font-size: 17px; font-weight: 900; box-shadow: 0 2px 8px rgba(241,196,15,0.15); transition: background 0.3s, color 0.3s; padding: 14px 22px; border-radius: 14px; }
+.zona-oro-btn:hover { background: linear-gradient(90deg, #ffd700 0%, #f1c40f 100%); color: #d35400 !important; }
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <span onclick="setMeta()" style="cursor:pointer; font-size:12px; color:#fff;">🎯 Meta</span>
+    <span id="txtHeader">🚕 CIERRE DE TURNO</span>
+    <span style="visibility:hidden">X</span> 
+</div>
+
+<div class="container">
+
+    <div class="goal-container" id="goal-box" style="display:none;">
+        <div class="goal-header">
+            <span>OBJETIVO MENSUAL (<span id="goal-target">0</span>€)</span>
+            <span id="goal-percent">0%</span>
+        </div>
+        <div class="goal-bar-bg"><div class="goal-bar-fill" id="goal-fill"></div></div>
+    </div>
+
+    <div id="pantalla-registro" class="pantalla activa">
+        <div id="modo-edicion-banner" style="background: #e74c3c; color: white; text-align: center; font-weight: bold; font-size: 12px; padding: 8px; border-radius: 8px; margin-bottom: 15px; display: none;">⚠️ MODO EDICIÓN ACTIVADO</div>
+        
+        <div class="dash">
+            <div><span>TOTAL BRUTO</span><b id="dash-total">0.00</b></div>
+            <div class="highlight"><span>EFECTIVO ESP.</span><b id="dash-efe">0.00</b></div>
+            <div class="digital"><span>DIGITAL</span><b id="dash-dig">0.00</b></div>
+        </div>
+
+        <form id="taxiForm">
+            <input type="hidden" name="token" value="661564839">
+            <input type="hidden" name="id_tx" id="id_tx">
+            <input type="hidden" name="action" id="form_action" value="new">
+
+            <div class="card">
+                <div class="card-title">1. Resumen General <button type="button" class="gps-btn zona-oro-btn" onclick="registrarZonaCaliente()" id="btn-gps"><span style="font-size:18px; margin-right:6px;">🏆</span><span style="font-weight:900; letter-spacing:1px; font-size:15px;">ZONA ORO</span></button></div>
+                <div class="grid-3">
+                    <div style="grid-column: span 3;"><label>Conductor</label>
+                        <select name="conductor" id="cond"><option value="Rafa N.S.M.">Rafa Núñez-Saavedra</option></select>
+                    </div>
+                    <div style="grid-column: span 2;"><label>Fecha</label><input type="date" name="fecha" id="fec" required></div>
+                    <div><label>Hora</label><input type="time" name="hora" id="hor" required></div>
+                </div>
+                <div class="grid">
+                    <div><label>Total Horas</label><input type="text" inputmode="decimal" pattern="[0-9.,]*" name="total_horas" id="h" placeholder="Ej: 9.5" required></div>
+                    <div><label>Servicios Tot.</label><input type="number" inputmode="numeric" name="servicios" id="srv" placeholder="Ej: 22" required></div>
+                </div>
+                <label>Bruto Taxímetro (€)</label>
+                <input type="text" inputmode="decimal" pattern="[0-9.,]*" name="euros" id="eur" placeholder="0.00" required>
+            </div>
+
+            <div class="card">
+                <div class="card-title">2. FreeNow y Apps</div>
+                <div class="grid-3">
+                    <div><label>Serv. FN</label><input type="number" inputmode="numeric" name="serv_fn" id="sfn" placeholder="0"></div>
+                    <div><label>Tax. FN</label><input type="text" inputmode="decimal" pattern="[0-9.,]*" name="tax_fn" id="tfn" placeholder="0.00"></div>
+                    <div><label>Ingreso FN</label><input type="text" inputmode="decimal" pattern="[0-9.,]*" name="euros_fn" id="efn" placeholder="0.00"></div>
+                </div>
+                <div class="grid">
+                    <div><label>Otras Apps (€)</label><input type="text" inputmode="decimal" pattern="[0-9.,]*" name="app_val" id="app" placeholder="0.00"></div>
+                    <div><label>Fuera App (€)</label><input type="text" inputmode="decimal" pattern="[0-9.,]*" name="fuera_app" id="fapp" placeholder="0.00"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">3. Extras y Datáfono</div>
+                <div class="grid">
+                    <div><label>Tarifa 9 (€)</label><input type="text" inputmode="decimal" pattern="[0-9.,]*" name="tarifa9" id="t9" placeholder="0.00"></div>
+                    <div><label>TPV Físico (€)</label><input type="text" inputmode="decimal" pattern="[0-9.,]*" name="tpv" id="tpv" placeholder="0.00"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">4. Distancias y Tiempos</div>
+                <div class="grid">
+                    <div><label>Km Totales</label><input type="number" inputmode="numeric" name="km_total" id="kt" placeholder="0"></div>
+                    <div><label>Km Ocupados</label><input type="number" inputmode="numeric" name="km_ocupado" id="ko" placeholder="0"></div>
+                </div>
+                <div class="grid">
+                    <div><label>Min Ocupados</label><input type="number" inputmode="numeric" name="min_ocup" id="mo" placeholder="0"></div>
+                    <div><label>Min On</label><input type="number" inputmode="numeric" name="min_on" id="mon" placeholder="0"></div>
+                </div>
+            </div>
+
+            <button type="submit" id="btn" class="main-btn">GUARDAR TURNO</button>
+            <button type="button" id="btn-cancelar" class="cancel-btn" onclick="cancelarEdicion()">❌ CANCELAR EDICIÓN</button>
+        </form>
+    </div>
+
+    <div id="pantalla-gastos" class="pantalla">
+        <div class="card">
+            <div class="card-title"><span style="font-size:22px;">💸</span> Añadir Gasto Operativo</div>
+            <form id="gastosForm">
+                <input type="hidden" name="token" value="661564839">
+                <input type="hidden" name="action" value="gasto">
+                <div class="grid">
+                    <div><label>Fecha</label><input type="date" name="fecha" id="fecGasto" required></div>
+                    <div><label>Concepto</label>
+                        <select name="concepto" required>
+                            <option value="Combustible/Carga">⛽ Combustible / Carga</option>
+                            <option value="Lavadero">🧼 Lavadero</option>
+                            <option value="Cuota Autónomo">💼 Cuota Autónomo</option>
+                            <option value="Seguro Taxi">🛡️ Seguro Taxi</option>
+                            <option value="Peaje">🛣️ Peaje / Parking</option>
+                            <option value="Taller/Mantenimiento">🔧 Taller / Mantenimiento</option>
+                            <option value="Gestoría/Impuestos">📑 Gestoría / Impuestos</option>
+                            <option value="Otros">✨ Otros</option>
+                        </select>
+                    </div>
+                </div>
+                <label>Importe (€)</label>
+                <input type="text" inputmode="decimal" pattern="[0-9.,]*" name="importe" placeholder="Ej: 35.50" required>
+                <button type="submit" class="main-btn" id="btn-gasto" style="background:linear-gradient(90deg,#e67e22,#ffd700);color:#fff;">💸 REGISTRAR GASTO</button>
+            </form>
+        </div>
+        <div id="lista-gastos" style="animation: fadeIn 0.5s; margin-top:18px;"></div>
+    </div>
+
+    <div id="pantalla-historial" class="pantalla">
+        <div class="card" style="background:var(--card-bg);border:var(--border);box-shadow:var(--shadow);">
+            <div class="card-title"><span style="font-size:22px;">📑</span> Historial de Turnos</div>
+            <div id="lista-historial" style="animation: fadeIn 0.5s; margin-top:18px;"></div>
+        </div>
+    </div>
+
+    <div id="pantalla-resumen" class="pantalla">
+        <div class="card">
+            <div class="card-title"><span style="font-size:22px;">📊</span> Estadísticas y Resumen</div>
+            <select id="period-selector" class="selector-estadisticas" onchange="renderizarEstadisticas()">
+                <option value="">Cargando datos...</option>
+            </select>
+            <button class="export-btn" onclick="exportarGestoria()">📄 COPIAR INFORME PARA GESTORÍA</button>
+            <div id="contenido-resumen" style="animation: fadeIn 0.5s; margin-top:18px;">
+                <div style="text-align:center; padding:30px; color:#888;">Cargando motor de datos... ⏳</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bottom-nav">
+    <div class="nav-item active" tabindex="0" aria-label="Cierre" onclick="verPantalla('registro', event)"><span class="nav-icon">🚕</span>Cierre</div>
+    <div class="nav-item" tabindex="0" aria-label="Gastos" onclick="verPantalla('gastos', event)"><span class="nav-icon">💸</span>Gastos</div>
+    <div class="nav-item" tabindex="0" aria-label="Historial" onclick="verPantalla('historial', event)"><span class="nav-icon">📑</span>Historial</div>
+    <div class="nav-item" tabindex="0" aria-label="Stats" onclick="verPantalla('resumen', event)"><span class="nav-icon">📊</span>Stats</div>
+</div>
+
+<script>
+// Navegación por teclado en la barra inferior
+document.querySelectorAll('.nav-item').forEach((item, idx, arr) => {
+    item.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+            item.click();
+        } else if (e.key === 'ArrowRight') {
+            arr[(idx+1)%arr.length].focus();
+        } else if (e.key === 'ArrowLeft') {
+            arr[(idx-1+arr.length)%arr.length].focus();
+        }
+    });
+});
+
+// ==============================================================
+// 1. CONFIGURACIÓN INICIAL
+// ==============================================================
+const scriptURL = "https://script.google.com/macros/s/AKfycbxJX2u4s8AA3O2aTqh24Ah_U8ccCnGMrOnz4U3LDy_0xMAvonBRuxHr1Fe2zHmY1t_C/exec"; 
+
+let globalStats = null; 
+let historicoGlobal = []; 
+let gastosGlobal = [];
+let estaEnviando = false; // <--- AQUÍ ESTÁ EL CERROJO ARREGLADO
+
+const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+const diasSemana = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+
+function setDateTime() {
+    const now = new Date();
+    document.getElementById("fec").valueAsDate = now;
+    document.getElementById("fecGasto").valueAsDate = now;
+    document.getElementById("hor").value = now.toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'});
+}
+setDateTime();
+cargarMeta();
+
+// ==============================================================
+// 2. LÓGICA DE INTERFAZ Y CÁLCULOS RÁPIDOS
+// ==============================================================
+function getVal(id) { let r = document.getElementById(id).value; return parseFloat((r||"").replace(',', '.')) || 0; }
+["eur", "tfn", "efn", "app", "fapp", "t9", "tpv"].forEach(id => document.getElementById(id).addEventListener("input", calcDash));
+
+function calcDash() {
+    let total = (getVal("eur") - getVal("tfn")) + getVal("efn") + getVal("fapp") + getVal("t9");
+    let digital = getVal("tpv") + getVal("app") + getVal("efn");
+    document.getElementById("dash-total").innerText = total.toFixed(2) + "€";
+    document.getElementById("dash-efe").innerText = (total - digital).toFixed(2) + "€";
+    document.getElementById("dash-dig").innerText = digital.toFixed(2) + "€";
+}
+
+function verPantalla(p, ev) {
+    document.querySelectorAll('.pantalla').forEach(d => d.classList.remove('activa'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('pantalla-' + p).classList.add('activa');
+    if(ev) ev.currentTarget.classList.add('active');
+    
+    if(p === 'historial') { document.getElementById('txtHeader').innerText = "📑 ÚLTIMOS TURNOS"; cargarDatos(); } 
+    else if (p === 'resumen') { document.getElementById('txtHeader').innerText = "📊 ESTADÍSTICAS GLOBALES"; cargarDatos(); document.getElementById('goal-box').style.display='block';} 
+    else if (p === 'gastos') { document.getElementById('txtHeader').innerText = "💸 CONTROL DE GASTOS"; document.getElementById('goal-box').style.display='none'; cargarDatos(); }
+    else { document.getElementById('txtHeader').innerText = document.getElementById('form_action').value === 'edit' ? "✏️ EDITAR" : "🚕 CIERRE"; document.getElementById('goal-box').style.display='block';}
+}
+
+// ==============================================================
+// 3. METAS MENSUALES (Gamificación)
+// ==============================================================
+function setMeta() {
+    let m = prompt("¿Cuál es tu objetivo de facturación para este mes en Euros? (Ej: 3500)");
+    if(m && !isNaN(m)) { localStorage.setItem("taxi_meta", m); cargarMeta(); actualizarMetaVisual(); }
+}
+function cargarMeta() {
+    let m = localStorage.getItem("taxi_meta");
+    if(m) { document.getElementById("goal-box").style.display = "block"; document.getElementById("goal-target").innerText = m; }
+}
+function actualizarMetaVisual(brutoMes = 0) {
+    let m = parseFloat(localStorage.getItem("taxi_meta"));
+    if(m && m > 0) {
+        let pct = Math.min((brutoMes / m) * 100, 100).toFixed(1);
+        document.getElementById("goal-percent").innerText = pct + "%";
+        document.getElementById("goal-fill").style.width = pct + "%";
+        document.getElementById("goal-fill").style.background = pct >= 100 ? "#2ecc71" : "var(--accent)";
+    }
+}
+
+// ==============================================================
+// 4. MOTOR DE DATOS (Fetch y Render)
+// ==============================================================
+function cargarDatos() {
+    const lh = document.getElementById('lista-historial');
+    if(lh.innerHTML === "") lh.innerHTML = '<div style="text-align:center; padding:30px; color:#888;">Sincronizando la nube... ⏳</div>';
+
+    fetch(scriptURL + "?token=661564839&t=" + new Date().getTime()).then(res => res.json()).then(data => {
+        
+        // PINTAR HISTORIAL DE TURNOS
+        lh.innerHTML = ""; historicoGlobal = data.history || []; gastosGlobal = data.gastos || [];
+        if(historicoGlobal.length === 0) lh.innerHTML = '<div style="text-align:center; padding:30px;">Sin datos.</div>';
+        else {
+            historicoGlobal.forEach(t => {
+                const f = t.fecha ? new Date(t.fecha).toLocaleDateString('es-ES') : 'S/F';
+                lh.innerHTML += `
+                    <div class="hist-card" onclick="this.classList.toggle('abierta')">
+                        <div class="hist-header">
+                            <div><div class="info"><b>👤 ${t.conductor}</b> • 🚕 ${t.servicios} Serv.</div><span class="date">${f} a las ${t.hora}</span></div>
+                            <div class="amount">${(parseFloat(t.total_euros)||0).toFixed(2)}€</div>
+                        </div>
+                        <div class="hist-detalles">
+                            <div class="det-item det-full" style="border-left: 4px solid #2ecc71">Efectivo Cuadre: <span>${(parseFloat(t.efectivo)||0).toFixed(2)}€</span></div>
+                            <div class="det-item">Horas: <span>${t.total_horas||0}h</span></div>
+                            <div class="det-item">Ratio: <span>${parseFloat(t.euros_hora||0).toFixed(2)}€/h</span></div>
+                            <div class="det-item">Km Libres: <span>${t.km_libre||0}</span></div>
+                            <div class="det-item">Ingreso FN: <span>${parseFloat(t.euros_fn||0).toFixed(2)}€</span></div>
+                            <button class="btn-editar" onclick="event.stopPropagation(); editarTurno('${t.id_tx}')">✏️ MODIFICAR TURNO</button>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        // PINTAR HISTORIAL DE GASTOS
+        let lg = document.getElementById("lista-gastos"); lg.innerHTML = "";
+        let gastosMesHtml = "";
+        let mesActualM = new Date().getMonth() + 1;
+        gastosGlobal.reverse().forEach(g => {
+            let gD = new Date(g.fecha);
+            if(gD.getMonth() + 1 === mesActualM) {
+                gastosMesHtml += `<div style="background:white; padding:10px; border-radius:8px; margin-bottom:8px; display:flex; justify-content:space-between; border-left:3px solid #e67e22; font-size:13px;">
+                <span><b>${g.concepto}</b> <br><small style="color:#888">${gD.toLocaleDateString()}</small></span>
+                <b style="color:#e74c3c">-${parseFloat(g.importe).toFixed(2)}€</b></div>`;
+            }
+        });
+        lg.innerHTML = gastosMesHtml ? "<h4 style='color:#555; font-size:12px; margin-top:20px;'>ÚLTIMOS GASTOS DEL MES</h4>" + gastosMesHtml : "";
+
+        // PREPARAR ESTADÍSTICAS Y ORÁCULO
+        if(data.stats) {
+            globalStats = data.stats;
+            const selector = document.getElementById('period-selector'); selector.innerHTML = ""; 
+            let opciones = [];
+            for(let anio in globalStats.yearly) opciones.push({ value: `Y|${anio}`, text: `📊 TOTAL AÑO ${anio}`, sort: anio });
+            for(let mK in globalStats.monthly) opciones.push({ value: `M|${mK}`, text: `📅 ${meses[parseInt(mK.split("-")[1]) - 1].toUpperCase()} ${mK.split("-")[0]}`, sort: mK });
+            opciones.sort((a,b) => b.sort.localeCompare(a.sort)).forEach(opt => {
+                let e = document.createElement("option"); e.value = opt.value; e.innerText = opt.text; selector.appendChild(e);
+            });
+            let mAct = new Date().getFullYear() + "-" + String(new Date().getMonth() + 1).padStart(2, '0');
+            if(globalStats.monthly[mAct]) { selector.value = `M|${mAct}`; actualizarMetaVisual(globalStats.monthly[mAct].bruto); }
+            renderizarEstadisticas();
+        }
+    }).catch(err => { lh.innerHTML = '<div style="text-align:center; padding:20px; color:#e74c3c;">❌ Error de red.</div>'; });
+}
+
+// ==============================================================
+// 5. ESTADÍSTICAS Y ORÁCULO
+// ==============================================================
+function getTrendBadge(cur, prev, lbl) {
+    if (!prev || prev === 0) return `<span style="color:#aaa; font-size:11px;">Sin datos vs ${lbl}</span>`;
+    let dif = ((cur - prev) / prev) * 100; let c = dif >= 0 ? "#2ecc71" : "#e74c3c";
+    return `<span class="badge-trend" style="color:${c}; border: 1px solid ${c};">${dif>=0?"▲ +":"▼ "}${dif.toFixed(1)}% <span style="font-weight:normal; font-size:10px;">vs ${lbl}</span></span>`;
+}
+
+function calcularOraculo(statsDias) {
+    let maxRatio = 0; let bestDay = -1;
+    for(let d in statsDias) {
+        let r = statsDias[d].turnos > 0 ? (statsDias[d].bruto / statsDias[d].turnos) : 0;
+        if(r > maxRatio) { maxRatio = r; bestDay = d; }
+    }
+    if(bestDay === -1) return "";
+    return `<div class="oracle-box">🔮 <b>El Oráculo dice:</b> Tu día más rentable es el <b>${diasSemana[bestDay]}</b> (Media de ${maxRatio.toFixed(2)}€ por turno).</div>`;
+}
+
+function renderizarEstadisticas() {
+    const sel = document.getElementById('period-selector'); const panel = document.getElementById('contenido-resumen');
+    if(!sel.value || !globalStats) return;
+    let t = sel.value.split("|")[0]; let k = sel.value.split("|")[1]; 
+    let s = (t === "M") ? globalStats.monthly[k] : globalStats.yearly[k];
+    if(!s) return;
+
+    let compHTML = ""; let oracleHTML = "";
+    if (t === "M") {
+        let y = parseInt(k.split("-")[0]); let m = parseInt(k.split("-")[1]);
+        let pM = globalStats.monthly[(m===1?y-1:y) + "-" + String(m===1?12:m-1).padStart(2, '0')]?.bruto || 0;
+        compHTML = `<div style="margin: 10px 0;">${getTrendBadge(s.bruto, pM, "Mes Ant.")}</div>`;
+        if(s.dias) oracleHTML = calcularOraculo(s.dias);
+    }
+
+    let neto = s.bruto - (s.gastos || 0);
+    let ratio_mes = s.h > 0 ? (s.bruto / s.h) : 0;
+
+    panel.innerHTML = `
+        <div class="mes-box">
+            <h2>ACUMULADO ${sel.options[sel.selectedIndex].text.substring(3)}</h2>
+            <div class="total">${s.bruto.toFixed(2)}€</div>
+            ${compHTML}
+            <div style="background:#2ecc71; color:white; padding:10px; border-radius:8px; font-weight:bold; margin-bottom:15px; font-size:18px;">
+                BENEFICIO NETO: ${neto.toFixed(2)}€ <br><span style="font-size:11px; font-weight:normal">(Bruto - ${s.gastos||0}€ en Gastos)</span>
+            </div>
+            
+            <div class="mes-grid">
+                <div class="mes-stat"><small>Efectivo Caja</small><span style="color:#2ecc71">${s.efe.toFixed(2)}€</span></div>
+                <div class="mes-stat"><small>Digital Total</small><span style="color:#3498db">${s.dig.toFixed(2)}€</span></div>
+                <div class="mes-stat"><small>Media €/Hora</small><span>${ratio_mes.toFixed(2)}€</span></div>
+                <div class="mes-stat"><small>Km Totales</small><span>${s.km}</span></div>
+            </div>
+            ${oracleHTML}
+        </div>
+    `;
+}
+
+// ==============================================================
+// 6. HERRAMIENTAS AVANZADAS (Exportar y GPS)
+// ==============================================================
+function exportarGestoria() {
+    let sel = document.getElementById('period-selector').value;
+    if(!sel || !globalStats) return alert("Cargando datos...");
+    let s = (sel.split("|")[0] === "M") ? globalStats.monthly[sel.split("|")[1]] : globalStats.yearly[sel.split("|")[1]];
+    let texto = `📊 INFORME TAXI - ${document.getElementById('period-selector').options[document.getElementById('period-selector').selectedIndex].text}\n` +
+                `--------------------------------\n` +
+                `Bruto Facturado: ${s.bruto.toFixed(2)}€\n` +
+                `Gastos Operativos: ${(s.gastos||0).toFixed(2)}€\n` +
+                `--------------------------------\n` +
+                `BENEFICIO NETO: ${(s.bruto - (s.gastos||0)).toFixed(2)}€\n\n` +
+                `Desglose Cobros:\nEfectivo: ${s.efe.toFixed(2)}€\nTarjetas/Apps: ${s.dig.toFixed(2)}€`;
+    
+    navigator.clipboard.writeText(texto).then(() => alert("✅ Informe copiado. Pégalo en WhatsApp o Email para tu gestor.")).catch(() => alert("❌ Error al copiar."));
+}
+
+function registrarZonaCaliente() {
+    if (!navigator.geolocation) return alert("Tu navegador no soporta geolocalización.");
+    let btn = document.getElementById("btn-gps"); btn.innerText = "Buscando satélites... 🛰️"; btn.disabled = true;
+    
+    navigator.geolocation.getCurrentPosition(pos => {
+        fetch(scriptURL, { method: "POST", mode: "no-cors", body: new URLSearchParams({action: 'zona', lat: pos.coords.latitude, lng: pos.coords.longitude, token: '661564839'}) })
+        .then(() => { alert("📍 ¡ZONA ORO GUARDADA!"); btn.innerText = "📍 ZONA GUARDADA"; setTimeout(()=> {btn.innerText = "📍 ZONA ORO"; btn.disabled=false;}, 3000); })
+        .catch(() => { alert("Error al guardar."); btn.disabled = false; btn.innerText = "📍 ZONA ORO"; });
+    }, err => { alert("Activa el GPS del móvil."); btn.disabled = false; btn.innerText = "📍 ZONA ORO"; }, {enableHighAccuracy: true});
+}
+
+// ==============================================================
+// 7. ENVÍOS DE FORMULARIOS (Turnos y Gastos)
+// ==============================================================
+function editarTurno(id) {
+    let t = historicoGlobal.find(x => x.id_tx === id); if(!t) return;
+    document.getElementById("id_tx").value = t.id_tx; document.getElementById("form_action").value = "edit";
+    document.getElementById("fec").value = t.fecha_input; document.getElementById("hor").value = t.hora;
+    document.getElementById("h").value = t.total_horas; document.getElementById("srv").value = t.servicios; document.getElementById("eur").value = t.euros;
+    document.getElementById("sfn").value = t.serv_fn||0; document.getElementById("tfn").value = t.tax_fn||0; document.getElementById("efn").value = t.euros_fn||0;
+    document.getElementById("app").value = t.app_val||0; document.getElementById("fapp").value = t.fuera_app||0; document.getElementById("t9").value = t.tarifa9||0;
+    document.getElementById("tpv").value = t.tpv||0; document.getElementById("kt").value = t.km_total||0; document.getElementById("ko").value = t.km_ocupado||0;
+    document.getElementById("mo").value = t.min_ocup||0; document.getElementById("mon").value = t.min_on||0; 
+    
+    document.getElementById("btn").innerText = "🔄 ACTUALIZAR"; document.getElementById("btn").style.background = "#e67e22";
+    document.getElementById("btn-cancelar").style.display = "block"; document.getElementById("modo-edicion-banner").style.display = "block";
+    calcDash(); verPantalla('registro'); window.scrollTo(0,0);
+}
+
+function cancelarEdicion() {
+    document.getElementById("taxiForm").reset(); document.getElementById("id_tx").value = ""; document.getElementById("form_action").value = "new";
+    setDateTime(); calcDash();
+    document.getElementById("btn").innerText = "GUARDAR TURNO"; document.getElementById("btn").style.background = "var(--primary)";
+    document.getElementById("btn-cancelar").style.display = "none"; document.getElementById("modo-edicion-banner").style.display = "none";
+}
+
+document.getElementById("taxiForm").addEventListener("submit", e => {
+    e.preventDefault(); if(estaEnviando) return; estaEnviando = true; 
+    if (document.getElementById("form_action").value === "new") document.getElementById("id_tx").value = Date.now() + "-" + Math.floor(Math.random()*1000);
+    const b = document.getElementById("btn"); b.innerText = "PROCESANDO... ⏳"; b.disabled = true; b.style.background = "#555"; 
+    
+    fetch(scriptURL, { method: "POST", mode: "no-cors", body: new URLSearchParams(new FormData(e.target))}).then(() => { 
+        alert("✅ Turno completado."); cancelarEdicion(); estaEnviando = false; document.querySelectorAll('.nav-item')[2].click(); 
+    }).catch(() => { alert("❌ Error."); b.disabled = false; estaEnviando = false; });
+});
+
+document.getElementById("gastosForm").addEventListener("submit", e => {
+    e.preventDefault(); const b = document.getElementById("btn-gasto"); b.innerText = "GUARDANDO... ⏳"; b.disabled = true;
+    
+    fetch(scriptURL, { method: "POST", mode: "no-cors", body: new URLSearchParams(new FormData(e.target))}).then(() => { 
+        alert("💸 Gasto añadido correctamente."); document.getElementById("gastosForm").reset(); setDateTime();
+        b.disabled = false; b.innerText = "💸 REGISTRAR GASTO"; document.querySelectorAll('.nav-item')[3].click();
+    }).catch(() => { alert("❌ Error."); b.disabled = false; });
+});
+</script>
+</body>
+</html>
