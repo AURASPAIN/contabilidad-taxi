@@ -8,243 +8,54 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#1a1a1a">
 
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./icono.png">
+
 <style>
-.nav-item:focus {
-    outline: 2px solid var(--accent);
-    background: #fffbe6;
-}
-.main-btn:active {
-    background: linear-gradient(90deg, #f1c40f 0%, #ffd700 100%);
-    color: #d35400;
-}
-.cancel-btn:active {
-    background: #c0392b;
-}
-.export-btn:active {
-    background: #217dbb;
-}
-.gps-btn:active {
-    background: #8e44ad;
-}
+.nav-item:focus { outline: 2px solid var(--accent); background: #fffbe6; }
+.main-btn:active { background: linear-gradient(90deg, #f1c40f 0%, #ffd700 100%); color: #d35400; }
+.cancel-btn:active { background: #c0392b; }
+.export-btn:active { background: #217dbb; }
+.gps-btn:active { background: #8e44ad; }
 
 /* Apple Premium & Professional Style */
 :root {
-    --primary: #181818;
-    --accent: #ffd700;
-    --text-dark: #222;
-    --bg: #f5f6fa;
-    --card-bg: #fff;
-    --shadow: 0 8px 32px rgba(0,0,0,0.08);
-    --border: 1px solid #ececec;
-    --input-bg: #f8fafc;
-    --input-border: 1px solid #e0e0e0;
-    --input-focus: #ffd700;
+    --primary: #181818; --accent: #ffd700; --text-dark: #222; --bg: #f5f6fa;
+    --card-bg: #fff; --shadow: 0 8px 32px rgba(0,0,0,0.08); --border: 1px solid #ececec;
+    --input-bg: #f8fafc; --input-border: 1px solid #e0e0e0; --input-focus: #ffd700;
 }
-body {
-    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: var(--bg);
-    margin: 0;
-    padding-bottom: 90px;
-    color: var(--text-dark);
-    -webkit-tap-highlight-color: transparent;
-}
-.header {
-    background: var(--primary);
-    color: var(--accent);
-    padding: 18px 20px;
-    text-align: center;
-    font-weight: 900;
-    font-size: 22px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    letter-spacing: 1px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-}
-.container {
-    padding: 24px 12px 0 12px;
-    max-width: 650px;
-    margin: auto;
-}
-.card {
-    background: var(--card-bg);
-    padding: 24px 20px;
-    border-radius: 18px;
-    box-shadow: var(--shadow);
-    margin-bottom: 24px;
-    border: var(--border);
-    transition: box-shadow 0.2s;
-}
-.card:hover {
-    box-shadow: 0 12px 40px rgba(0,0,0,0.12);
-}
-.card-title {
-    font-size: 16px;
-    font-weight: 900;
-    color: var(--primary);
-    margin-top: 0;
-    margin-bottom: 18px;
-    text-transform: uppercase;
-    border-bottom: 2px solid #f7f7f7;
-    padding-bottom: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 18px;
-}
-.grid-3 {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 14px;
-}
-label {
-    font-size: 13px;
-    font-weight: 700;
-    color: #888;
-    text-transform: uppercase;
-    display: block;
-    margin-bottom: 8px;
-    letter-spacing: 0.5px;
-}
-input, select {
-    width: 100%;
-    padding: 16px;
-    border: var(--input-border);
-    border-radius: 12px;
-    margin-bottom: 16px;
-    box-sizing: border-box;
-    font-size: 17px;
-    background: var(--input-bg);
-    transition: border 0.2s, box-shadow 0.2s;
-    outline: none;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-}
-input:focus, select:focus {
-    border-color: var(--input-focus);
-    box-shadow: 0 4px 16px rgba(255,215,0,0.08);
-}
-.dash {
-    background: var(--primary);
-    color: white;
-    padding: 18px 12px;
-    border-radius: 18px;
-    display: flex;
-    justify-content: space-between;
-    text-align: center;
-    margin-bottom: 18px;
-    box-shadow: 0 6px 24px rgba(0,0,0,0.12);
-}
-.dash div {
-    flex: 1;
-    border-right: 1px solid #333;
-    padding: 0 8px;
-}
-.dash div:last-child {
-    border-right: none;
-}
-.dash span {
-    font-size: 11px;
-    color: #ffd700;
-    display: block;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    margin-bottom: 6px;
-    text-transform: uppercase;
-}
-.dash b {
-    font-size: 24px;
-    color: white;
-    font-weight: 900;
-    letter-spacing: 1px;
-}
+body { font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); margin: 0; padding-bottom: 90px; color: var(--text-dark); -webkit-tap-highlight-color: transparent; }
+.header { background: var(--primary); color: var(--accent); padding: 18px 20px; text-align: center; font-weight: 900; font-size: 22px; position: sticky; top: 0; z-index: 100; letter-spacing: 1px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.container { padding: 24px 12px 0 12px; max-width: 650px; margin: auto; }
+.card { background: var(--card-bg); padding: 24px 20px; border-radius: 18px; box-shadow: var(--shadow); margin-bottom: 24px; border: var(--border); transition: box-shadow 0.2s; }
+.card:hover { box-shadow: 0 12px 40px rgba(0,0,0,0.12); }
+.card-title { font-size: 16px; font-weight: 900; color: var(--primary); margin-top: 0; margin-bottom: 18px; text-transform: uppercase; border-bottom: 2px solid #f7f7f7; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+label { font-size: 13px; font-weight: 700; color: #888; text-transform: uppercase; display: block; margin-bottom: 8px; letter-spacing: 0.5px; }
+input, select { width: 100%; padding: 16px; border: var(--input-border); border-radius: 12px; margin-bottom: 16px; box-sizing: border-box; font-size: 17px; background: var(--input-bg); transition: border 0.2s, box-shadow 0.2s; outline: none; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+input:focus, select:focus { border-color: var(--input-focus); box-shadow: 0 4px 16px rgba(255,215,0,0.08); }
+.dash { background: var(--primary); color: white; padding: 18px 12px; border-radius: 18px; display: flex; justify-content: space-between; text-align: center; margin-bottom: 18px; box-shadow: 0 6px 24px rgba(0,0,0,0.12); }
+.dash div { flex: 1; border-right: 1px solid #333; padding: 0 8px; }
+.dash div:last-child { border-right: none; }
+.dash span { font-size: 11px; color: #ffd700; display: block; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 6px; text-transform: uppercase; }
+.dash b { font-size: 24px; color: white; font-weight: 900; letter-spacing: 1px; }
 .dash .highlight b { color: #2ecc71; }
 .dash .digital b { color: #3498db; }
-button.main-btn {
-    width: 100%;
-    padding: 22px;
-    background: linear-gradient(90deg, #ffd700 0%, #f1c40f 100%);
-    color: #181818;
-    border: none;
-    border-radius: 14px;
-    font-weight: 900;
-    font-size: 20px;
-    cursor: pointer;
-    margin-top: 12px;
-    letter-spacing: 1px;
-    box-shadow: 0 4px 16px rgba(255,215,0,0.08);
-    transition: background 0.3s, color 0.3s;
-}
-button.main-btn:disabled {
-    background: #555;
-    color: #aaa;
-    cursor: not-allowed;
-}
-button.cancel-btn, button.export-btn, button.gps-btn {
-    width: 100%;
-    padding: 18px;
-    color: white;
-    border: none;
-    border-radius: 14px;
-    font-weight: 800;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 12px;
-}
+button.main-btn { width: 100%; padding: 22px; background: linear-gradient(90deg, #ffd700 0%, #f1c40f 100%); color: #181818; border: none; border-radius: 14px; font-weight: 900; font-size: 20px; cursor: pointer; margin-top: 12px; letter-spacing: 1px; box-shadow: 0 4px 16px rgba(255,215,0,0.08); transition: background 0.3s, color 0.3s; }
+button.main-btn:disabled { background: #555; color: #aaa; cursor: not-allowed; }
+button.cancel-btn, button.export-btn, button.gps-btn { width: 100%; padding: 18px; color: white; border: none; border-radius: 14px; font-weight: 800; font-size: 16px; cursor: pointer; margin-top: 12px; }
 .cancel-btn { background: #e74c3c; display: none; }
 .export-btn { background: #3498db; margin-bottom: 24px; }
 .gps-btn { background: #9b59b6; margin-top: 0; padding: 12px; font-size: 15px; }
 .pantalla { display: none; }
 .pantalla.activa { display: block; animation: fadeIn 0.3s ease; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-.bottom-nav {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background: white;
-    display: flex;
-    border-top: 1px solid #eaeaea;
-    padding-bottom: env(safe-area-inset-bottom);
-    z-index: 100;
-    box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
-}
-.nav-item {
-    flex: 1;
-    text-align: center;
-    padding: 16px 0;
-    color: #b2bec3;
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: 900;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    transition: background 0.2s, color 0.2s;
-}
-.nav-item.active {
-    color: var(--primary);
-    border-top: 4px solid var(--accent);
-    background: #fafafa;
-}
+.bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; border-top: 1px solid #eaeaea; padding-bottom: env(safe-area-inset-bottom); z-index: 100; box-shadow: 0 -2px 12px rgba(0,0,0,0.06); }
+.nav-item { flex: 1; text-align: center; padding: 16px 0; color: #b2bec3; cursor: pointer; font-size: 13px; font-weight: 900; display: flex; flex-direction: column; align-items: center; gap: 6px; transition: background 0.2s, color 0.2s; }
+.nav-item.active { color: var(--primary); border-top: 4px solid var(--accent); background: #fafafa; }
 .nav-icon { font-size: 24px; }
-.hist-card {
-    border-left: 6px solid var(--accent);
-    cursor: pointer;
-    transition: 0.2s;
-    overflow: hidden;
-    background: white;
-    margin-bottom: 14px;
-    border-radius: 12px;
-    padding: 18px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.07);
-}
+.hist-card { border-left: 6px solid var(--accent); cursor: pointer; transition: 0.2s; overflow: hidden; background: white; margin-bottom: 14px; border-radius: 12px; padding: 18px; box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
 .hist-header { display: flex; justify-content: space-between; align-items: center; }
 .hist-header .info { font-size: 15px; color: #555; }
 .hist-header .date { font-size: 12px; color: #999; display: block; margin-top: 4px; }
@@ -370,6 +181,8 @@ button.cancel-btn, button.export-btn, button.gps-btn {
             <form id="gastosForm">
                 <input type="hidden" name="token" value="661564839">
                 <input type="hidden" name="action" value="gasto">
+                <input type="hidden" name="id_tx" id="id_tx_gasto">
+                
                 <div class="grid">
                     <div><label>Fecha</label><input type="date" name="fecha" id="fecGasto" required></div>
                     <div><label>Concepto</label>
@@ -422,28 +235,28 @@ button.cancel-btn, button.export-btn, button.gps-btn {
 </div>
 
 <script>
-// Navegación por teclado en la barra inferior
 document.querySelectorAll('.nav-item').forEach((item, idx, arr) => {
     item.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' || e.key === ' ') {
-            item.click();
-        } else if (e.key === 'ArrowRight') {
-            arr[(idx+1)%arr.length].focus();
-        } else if (e.key === 'ArrowLeft') {
-            arr[(idx-1+arr.length)%arr.length].focus();
-        }
+        if (e.key === 'Enter' || e.key === ' ') { item.click(); } 
+        else if (e.key === 'ArrowRight') { arr[(idx+1)%arr.length].focus(); } 
+        else if (e.key === 'ArrowLeft') { arr[(idx-1+arr.length)%arr.length].focus(); }
     });
 });
 
-// ==============================================================
-// 1. CONFIGURACIÓN INICIAL
-// ==============================================================
-const scriptURL = "https://script.google.com/macros/s/AKfycbxJX2u4s8AA3O2aTqh24Ah_U8ccCnGMrOnz4U3LDy_0xMAvonBRuxHr1Fe2zHmY1t_C/exec"; 
+document.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('focus', function() { btn.style.boxShadow = '0 0 0 2px var(--accent)'; });
+    btn.addEventListener('blur', function() { btn.style.boxShadow = ''; });
+});
+
+document.querySelectorAll('input, select').forEach(el => { el.setAttribute('aria-label', el.name || el.id || 'input'); });
+
+const scriptURL = "TU_URL_DE_APPS_SCRIPT_AQUI"; 
 
 let globalStats = null; 
 let historicoGlobal = []; 
 let gastosGlobal = [];
-let estaEnviando = false; // <--- AQUÍ ESTÁ EL CERROJO ARREGLADO
+let estaEnviando = false; 
+let enviandoGasto = false; 
 
 const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 const diasSemana = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
@@ -457,9 +270,6 @@ function setDateTime() {
 setDateTime();
 cargarMeta();
 
-// ==============================================================
-// 2. LÓGICA DE INTERFAZ Y CÁLCULOS RÁPIDOS
-// ==============================================================
 function getVal(id) { let r = document.getElementById(id).value; return parseFloat((r||"").replace(',', '.')) || 0; }
 ["eur", "tfn", "efn", "app", "fapp", "t9", "tpv"].forEach(id => document.getElementById(id).addEventListener("input", calcDash));
 
@@ -483,9 +293,6 @@ function verPantalla(p, ev) {
     else { document.getElementById('txtHeader').innerText = document.getElementById('form_action').value === 'edit' ? "✏️ EDITAR" : "🚕 CIERRE"; document.getElementById('goal-box').style.display='block';}
 }
 
-// ==============================================================
-// 3. METAS MENSUALES (Gamificación)
-// ==============================================================
 function setMeta() {
     let m = prompt("¿Cuál es tu objetivo de facturación para este mes en Euros? (Ej: 3500)");
     if(m && !isNaN(m)) { localStorage.setItem("taxi_meta", m); cargarMeta(); actualizarMetaVisual(); }
@@ -504,16 +311,12 @@ function actualizarMetaVisual(brutoMes = 0) {
     }
 }
 
-// ==============================================================
-// 4. MOTOR DE DATOS (Fetch y Render)
-// ==============================================================
 function cargarDatos() {
     const lh = document.getElementById('lista-historial');
     if(lh.innerHTML === "") lh.innerHTML = '<div style="text-align:center; padding:30px; color:#888;">Sincronizando la nube... ⏳</div>';
 
     fetch(scriptURL + "?token=661564839&t=" + new Date().getTime()).then(res => res.json()).then(data => {
         
-        // PINTAR HISTORIAL DE TURNOS
         lh.innerHTML = ""; historicoGlobal = data.history || []; gastosGlobal = data.gastos || [];
         if(historicoGlobal.length === 0) lh.innerHTML = '<div style="text-align:center; padding:30px;">Sin datos.</div>';
         else {
@@ -537,7 +340,6 @@ function cargarDatos() {
             });
         }
 
-        // PINTAR HISTORIAL DE GASTOS
         let lg = document.getElementById("lista-gastos"); lg.innerHTML = "";
         let gastosMesHtml = "";
         let mesActualM = new Date().getMonth() + 1;
@@ -551,7 +353,6 @@ function cargarDatos() {
         });
         lg.innerHTML = gastosMesHtml ? "<h4 style='color:#555; font-size:12px; margin-top:20px;'>ÚLTIMOS GASTOS DEL MES</h4>" + gastosMesHtml : "";
 
-        // PREPARAR ESTADÍSTICAS Y ORÁCULO
         if(data.stats) {
             globalStats = data.stats;
             const selector = document.getElementById('period-selector'); selector.innerHTML = ""; 
@@ -568,9 +369,6 @@ function cargarDatos() {
     }).catch(err => { lh.innerHTML = '<div style="text-align:center; padding:20px; color:#e74c3c;">❌ Error de red.</div>'; });
 }
 
-// ==============================================================
-// 5. ESTADÍSTICAS Y ORÁCULO
-// ==============================================================
 function getTrendBadge(cur, prev, lbl) {
     if (!prev || prev === 0) return `<span style="color:#aaa; font-size:11px;">Sin datos vs ${lbl}</span>`;
     let dif = ((cur - prev) / prev) * 100; let c = dif >= 0 ? "#2ecc71" : "#e74c3c";
@@ -625,9 +423,6 @@ function renderizarEstadisticas() {
     `;
 }
 
-// ==============================================================
-// 6. HERRAMIENTAS AVANZADAS (Exportar y GPS)
-// ==============================================================
 function exportarGestoria() {
     let sel = document.getElementById('period-selector').value;
     if(!sel || !globalStats) return alert("Cargando datos...");
@@ -654,9 +449,6 @@ function registrarZonaCaliente() {
     }, err => { alert("Activa el GPS del móvil."); btn.disabled = false; btn.innerText = "📍 ZONA ORO"; }, {enableHighAccuracy: true});
 }
 
-// ==============================================================
-// 7. ENVÍOS DE FORMULARIOS (Turnos y Gastos)
-// ==============================================================
 function editarTurno(id) {
     let t = historicoGlobal.find(x => x.id_tx === id); if(!t) return;
     document.getElementById("id_tx").value = t.id_tx; document.getElementById("form_action").value = "edit";
@@ -690,13 +482,26 @@ document.getElementById("taxiForm").addEventListener("submit", e => {
 });
 
 document.getElementById("gastosForm").addEventListener("submit", e => {
-    e.preventDefault(); const b = document.getElementById("btn-gasto"); b.innerText = "GUARDANDO... ⏳"; b.disabled = true;
+    e.preventDefault(); if(enviandoGasto) return; enviandoGasto = true;
+    document.getElementById("id_tx_gasto").value = "G-" + Date.now() + "-" + Math.floor(Math.random()*1000);
+    const b = document.getElementById("btn-gasto"); b.innerText = "GUARDANDO... ⏳"; b.disabled = true;
     
     fetch(scriptURL, { method: "POST", mode: "no-cors", body: new URLSearchParams(new FormData(e.target))}).then(() => { 
         alert("💸 Gasto añadido correctamente."); document.getElementById("gastosForm").reset(); setDateTime();
-        b.disabled = false; b.innerText = "💸 REGISTRAR GASTO"; document.querySelectorAll('.nav-item')[3].click();
-    }).catch(() => { alert("❌ Error."); b.disabled = false; });
+        b.disabled = false; b.innerText = "💸 REGISTRAR GASTO"; enviandoGasto = false; document.querySelectorAll('.nav-item')[3].click();
+    }).catch(() => { alert("❌ Error."); b.disabled = false; enviandoGasto = false; });
 });
+
+// ==============================================================
+// REGISTRO DEL SERVICE WORKER (PARA QUE SEA UNA APP PWA)
+// ==============================================================
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+            .then(reg => console.log('SW registrado', reg))
+            .catch(err => console.log('Error SW', err));
+    });
+}
 </script>
 </body>
 </html>
