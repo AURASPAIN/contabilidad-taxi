@@ -21,7 +21,6 @@
 .export-btn:active { background: #217dbb; }
 .gps-btn:active { background: #8e44ad; }
 
-/* Apple Premium & Professional Style */
 :root {
     --primary: #181818; --accent: #ffd700; --text-dark: #222; --bg: #f5f6fa;
     --card-bg: #fff; --shadow: 0 8px 32px rgba(0,0,0,0.08); --border: 1px solid #ececec;
@@ -31,7 +30,6 @@ body { font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, "Segoe 
 .header { background: var(--primary); color: var(--accent); padding: 18px 20px; text-align: center; font-weight: 900; font-size: 22px; position: sticky; top: 0; z-index: 100; letter-spacing: 1px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
 .container { padding: 24px 12px 0 12px; max-width: 650px; margin: auto; }
 .card { background: var(--card-bg); padding: 24px 20px; border-radius: 18px; box-shadow: var(--shadow); margin-bottom: 24px; border: var(--border); transition: box-shadow 0.2s; }
-.card:hover { box-shadow: 0 12px 40px rgba(0,0,0,0.12); }
 .card-title { font-size: 16px; font-weight: 900; color: var(--primary); margin-top: 0; margin-bottom: 18px; text-transform: uppercase; border-bottom: 2px solid #f7f7f7; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
 .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
 .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
@@ -80,8 +78,6 @@ button.cancel-btn, button.export-btn, button.gps-btn { width: 100%; padding: 18p
 .badge-trend { padding: 6px 12px; border-radius: 8px; font-size: 14px; font-weight: bold; display: inline-block; margin: 0 6px; }
 .oracle-box { background: #fff3cd; border: 1px solid #ffeeba; padding: 18px; border-radius: 12px; text-align: left; margin-top: 18px; font-size: 15px; color: #856404;}
 .oracle-box b { font-size: 18px; display: block; margin-top: 7px; color: #d35400;}
-
-/* Goal Progress Bar */
 .goal-container { background: white; border-radius: 14px; padding: 18px; margin-bottom: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
 .goal-header { display: flex; justify-content:space-between; font-size: 14px; font-weight: bold; color: #555; margin-bottom: 10px;}
 .goal-bar-bg { width: 100%; background: #eee; height: 14px; border-radius: 7px; overflow: hidden; position: relative;}
@@ -265,15 +261,18 @@ document.querySelectorAll('button').forEach(btn => {
 
 document.querySelectorAll('input, select').forEach(el => { el.setAttribute('aria-label', el.name || el.id || 'input'); });
 
-// ¡AQUÍ ESTÁ TU URL EXACTA INTACTA!
 const scriptURL = "https://script.google.com/macros/s/AKfycbzATOQN3moS7g333R-MhH7DdRBKt8Om9-_SzEMLRmJy3CmxY5kdokht5BNxY2JCauE6/exec"; 
 
 let globalStats = null; 
 let historicoGlobal = []; 
 let gastosGlobal = [];
 let zonasGlobal = [];
+
 let estaEnviando = false; 
 let enviandoGasto = false; 
+let enviandoZona = false; // ESCUDO PARA EL GPS
+let currentZonaId = null;
+
 let map = null;
 let markers = [];
 
@@ -313,7 +312,7 @@ function verPantalla(p, ev) {
         document.getElementById('txtHeader').innerText = "🗺️ MAPA DE ZONAS ORO"; 
         document.getElementById('goal-box').style.display='none'; 
         cargarDatos(); 
-        setTimeout(() => { if(map) map.invalidateSize(); }, 300); // Fix para renderizar bien el mapa al cambiar de pestaña
+        if(map) { setTimeout(() => { map.invalidateSize(); }, 300); }
     }
     else { document.getElementById('txtHeader').innerText = document.getElementById('form_action').value === 'edit' ? "✏️ EDITAR" : "🚕 CIERRE"; document.getElementById('goal-box').style.display='block';}
 }
@@ -336,10 +335,9 @@ function actualizarMetaVisual(brutoMes = 0) {
     }
 }
 
-// INICIALIZA Y RENDERIZA EL MAPA
 function initMap(zonas) {
     if (!map) {
-        map = L.map('map').setView([40.4167, -3.7032], 6); // Centro de España por defecto
+        map = L.map('map').setView([40.4167, -3.7032], 6); 
         L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
             attribution: '© OpenStreetMap contributors © CARTO'
         }).addTo(map);
@@ -351,34 +349,39 @@ function initMap(zonas) {
     if (zonas && zonas.length > 0) {
         let bounds = [];
         zonas.forEach(z => {
-            let marker = L.marker([z.lat, z.lng]).addTo(map);
+            let lat = parseFloat(String(z.lat).replace(',', '.'));
+            let lng = parseFloat(String(z.lng).replace(',', '.'));
             
-            let d = new Date(z.fecha);
-            let hora = d.toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'});
-            let fechaSTR = d.toLocaleDateString('es-ES');
-            
-            let popupHtml = `
-                <div style="text-align:center; font-family:sans-serif;">
-                    <b style="color:#d4af37; font-size:14px;">🏆 ZONA ORO</b><br>
-                    <span style="color:#555; font-size:11px;">Guardada a las <b>${hora}</b></span><br>
-                    <span style="color:#888; font-size:10px;">El día ${fechaSTR}</span><br>
-                    <a href="${z.link}" target="_blank" style="display:block; margin:10px 0; background:#3498db; color:white; padding:8px; border-radius:8px; text-decoration:none; font-weight:bold; font-size:12px;">📍 Navegar Aquí</a>
-                    <button onclick="borrarZona('${z.id_zona}')" style="background:#e74c3c; color:white; border:none; padding:8px; border-radius:8px; cursor:pointer; width:100%; font-weight:bold; font-size:12px;">🗑️ Eliminar Zona</button>
-                </div>
-            `;
-            marker.bindPopup(popupHtml);
-            markers.push(marker);
-            bounds.push([z.lat, z.lng]);
+            if(!isNaN(lat) && !isNaN(lng)){
+                let marker = L.marker([lat, lng]).addTo(map);
+                
+                let d = new Date(z.fecha);
+                let hora = d.toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'});
+                let fechaSTR = d.toLocaleDateString('es-ES');
+                
+                let popupHtml = `
+                    <div style="text-align:center; font-family:sans-serif;">
+                        <b style="color:#d4af37; font-size:14px;">🏆 ZONA ORO</b><br>
+                        <span style="color:#555; font-size:11px;">Guardada a las <b>${hora}</b></span><br>
+                        <span style="color:#888; font-size:10px;">El día ${fechaSTR}</span><br>
+                        <a href="${z.link}" target="_blank" style="display:block; margin:10px 0; background:#3498db; color:white; padding:8px; border-radius:8px; text-decoration:none; font-weight:bold; font-size:12px;">📍 Navegar Aquí</a>
+                        <button onclick="borrarZona('${z.id_zona}')" style="background:#e74c3c; color:white; border:none; padding:8px; border-radius:8px; cursor:pointer; width:100%; font-weight:bold; font-size:12px;">🗑️ Eliminar Zona</button>
+                    </div>
+                `;
+                marker.bindPopup(popupHtml);
+                markers.push(marker);
+                bounds.push([lat, lng]);
+            }
         });
         if (bounds.length > 0) map.fitBounds(bounds, {padding: [20, 20]});
     }
+    setTimeout(() => { map.invalidateSize(); }, 300);
 }
 
-// BORRAR ZONA ORO
 function borrarZona(id_zona) {
     if(confirm("¿Seguro que quieres borrar esta Zona Oro del mapa?")) {
         fetch(scriptURL, { method: "POST", mode: "no-cors", body: new URLSearchParams({action: 'delete_zona', id_zona: id_zona, token: '661564839'}) })
-        .then(() => { alert("🗑️ Zona eliminada. Refrescando datos..."); cargarDatos(); })
+        .then(() => { alert("🗑️ Zona eliminada. Refrescando..."); cargarDatos(); })
         .catch(() => { alert("Error al eliminar"); });
     }
 }
@@ -391,7 +394,6 @@ function cargarDatos() {
         
         lh.innerHTML = ""; historicoGlobal = data.history || []; gastosGlobal = data.gastos || []; zonasGlobal = data.zonas || [];
         
-        // PINTAMOS EL MAPA CON LAS ZONAS RECIBIDAS
         initMap(zonasGlobal);
 
         if(historicoGlobal.length === 0) lh.innerHTML = '<div style="text-align:center; padding:30px;">Sin datos.</div>';
@@ -516,13 +518,48 @@ function exportarGestoria() {
 
 function registrarZonaCaliente() {
     if (!navigator.geolocation) return alert("Tu navegador no soporta geolocalización.");
-    let btn = document.getElementById("btn-gps"); btn.innerText = "Buscando satélites... 🛰️"; btn.disabled = true;
+    if (enviandoZona) return; // ESCUDO BOTON GPS
+    
+    let btn = document.getElementById("btn-gps"); 
+    btn.innerText = "🛰️..."; btn.disabled = true;
+    
+    if (!currentZonaId) {
+        currentZonaId = "Z-" + Date.now() + "-" + Math.floor(Math.random()*1000);
+    }
     
     navigator.geolocation.getCurrentPosition(pos => {
-        fetch(scriptURL, { method: "POST", mode: "no-cors", body: new URLSearchParams({action: 'zona', lat: pos.coords.latitude, lng: pos.coords.longitude, token: '661564839'}) })
-        .then(() => { alert("📍 ¡ZONA ORO GUARDADA!"); btn.innerText = "📍 ZONA GUARDADA"; setTimeout(()=> {btn.innerText = "🏆 ZONA ORO"; btn.disabled=false;}, 3000); })
-        .catch(() => { alert("Error al guardar."); btn.disabled = false; btn.innerText = "🏆 ZONA ORO"; });
-    }, err => { alert("Activa el GPS del móvil."); btn.disabled = false; btn.innerText = "🏆 ZONA ORO"; }, {enableHighAccuracy: true});
+        enviandoZona = true;
+        let latStr = pos.coords.latitude.toString();
+        let lngStr = pos.coords.longitude.toString();
+        
+        fetch(scriptURL, { 
+            method: "POST", 
+            mode: "no-cors", 
+            body: new URLSearchParams({
+                action: 'zona', 
+                lat: latStr, 
+                lng: lngStr, 
+                id_zona: currentZonaId,
+                token: '661564839'
+            }) 
+        })
+        .then(() => { 
+            alert("📍 ¡ZONA ORO GUARDADA!"); 
+            btn.innerText = "📍 ZONA GUARDADA"; 
+            currentZonaId = null; // Reiniciar escudo si ha ido bien
+            enviandoZona = false;
+            setTimeout(()=> {btn.innerText = "🏆 ZONA ORO"; btn.disabled=false;}, 3000); 
+            cargarDatos(); 
+        })
+        .catch(() => { 
+            alert("Error al guardar. Reintenta."); 
+            btn.disabled = false; btn.innerText = "🏆 ZONA ORO"; 
+            enviandoZona = false;
+        });
+    }, err => { 
+        alert("Activa el GPS del móvil."); 
+        btn.disabled = false; btn.innerText = "🏆 ZONA ORO"; 
+    }, {enableHighAccuracy: true});
 }
 
 function editarTurno(id) {
@@ -561,7 +598,7 @@ document.getElementById("taxiForm").addEventListener("submit", e => {
         alert("✅ Turno completado."); 
         cancelarEdicion(); 
         estaEnviando = false; 
-        document.querySelectorAll('.nav-item')[3].click(); // Redirige al historial (ahora en la posición 3)
+        document.querySelectorAll('.nav-item')[3].click(); 
     }).catch(() => { 
         alert("❌ Error de red al enviar. Vuelve a intentarlo."); 
         b.disabled = false; 
@@ -589,7 +626,7 @@ document.getElementById("gastosForm").addEventListener("submit", e => {
         b.disabled = false; 
         b.innerText = "💸 REGISTRAR GASTO"; 
         enviandoGasto = false; 
-        document.querySelectorAll('.nav-item')[4].click(); // Redirige a las Stats (ahora en la posición 4)
+        document.querySelectorAll('.nav-item')[4].click(); 
     }).catch(() => { 
         alert("❌ Error de red al enviar el gasto. Vuelve a intentarlo."); 
         b.disabled = false; 
