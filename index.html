@@ -473,23 +473,55 @@ function cancelarEdicion() {
 
 document.getElementById("taxiForm").addEventListener("submit", e => {
     e.preventDefault(); if(estaEnviando) return; estaEnviando = true; 
-    if (document.getElementById("form_action").value === "new") document.getElementById("id_tx").value = Date.now() + "-" + Math.floor(Math.random()*1000);
+    
+    // FIX ANTIDUPLICADOS: Solo genera el ID si está vacío, así si hay fallo de red, se reintenta el mismo ID
+    let inputId = document.getElementById("id_tx");
+    if (document.getElementById("form_action").value === "new" && !inputId.value) {
+        inputId.value = Date.now() + "-" + Math.floor(Math.random()*1000);
+    }
+    
     const b = document.getElementById("btn"); b.innerText = "PROCESANDO... ⏳"; b.disabled = true; b.style.background = "#555"; 
     
     fetch(scriptURL, { method: "POST", mode: "no-cors", body: new URLSearchParams(new FormData(e.target))}).then(() => { 
-        alert("✅ Turno completado."); cancelarEdicion(); estaEnviando = false; document.querySelectorAll('.nav-item')[2].click(); 
-    }).catch(() => { alert("❌ Error."); b.disabled = false; estaEnviando = false; });
+        alert("✅ Turno completado."); 
+        cancelarEdicion(); 
+        estaEnviando = false; 
+        document.querySelectorAll('.nav-item')[2].click(); 
+    }).catch(() => { 
+        alert("❌ Error de red al enviar. Vuelve a intentarlo."); 
+        b.disabled = false; 
+        b.innerText = "GUARDAR TURNO";
+        b.style.background = "var(--primary)";
+        estaEnviando = false; 
+    });
 });
 
 document.getElementById("gastosForm").addEventListener("submit", e => {
     e.preventDefault(); if(enviandoGasto) return; enviandoGasto = true;
-    document.getElementById("id_tx_gasto").value = "G-" + Date.now() + "-" + Math.floor(Math.random()*1000);
+    
+    // FIX ANTIDUPLICADOS GASTOS: Solo genera el ID si está vacío, manteniendo el mismo en caso de reintento.
+    let inputIdGasto = document.getElementById("id_tx_gasto");
+    if (!inputIdGasto.value) {
+        inputIdGasto.value = "G-" + Date.now() + "-" + Math.floor(Math.random()*1000);
+    }
+    
     const b = document.getElementById("btn-gasto"); b.innerText = "GUARDANDO... ⏳"; b.disabled = true;
     
     fetch(scriptURL, { method: "POST", mode: "no-cors", body: new URLSearchParams(new FormData(e.target))}).then(() => { 
-        alert("💸 Gasto añadido correctamente."); document.getElementById("gastosForm").reset(); setDateTime();
-        b.disabled = false; b.innerText = "💸 REGISTRAR GASTO"; enviandoGasto = false; document.querySelectorAll('.nav-item')[3].click();
-    }).catch(() => { alert("❌ Error."); b.disabled = false; enviandoGasto = false; });
+        alert("💸 Gasto añadido correctamente."); 
+        document.getElementById("gastosForm").reset(); 
+        inputIdGasto.value = ""; // Limpiar el ID solo cuando tengamos éxito
+        setDateTime();
+        b.disabled = false; 
+        b.innerText = "💸 REGISTRAR GASTO"; 
+        enviandoGasto = false; 
+        document.querySelectorAll('.nav-item')[3].click();
+    }).catch(() => { 
+        alert("❌ Error de red al enviar el gasto. Vuelve a intentarlo."); 
+        b.disabled = false; 
+        b.innerText = "💸 REGISTRAR GASTO";
+        enviandoGasto = false; 
+    });
 });
 
 // ==============================================================
