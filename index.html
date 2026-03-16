@@ -11,6 +11,9 @@
 <link rel="manifest" href="./manifest.json">
 <link rel="apple-touch-icon" href="./icono.png">
 
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 <style>
 .nav-item:focus { outline: 2px solid var(--accent); background: #fffbe6; }
 .main-btn:active { background: linear-gradient(90deg, #f1c40f 0%, #ffd700 100%); color: #d35400; }
@@ -52,9 +55,9 @@ button.cancel-btn, button.export-btn, button.gps-btn { width: 100%; padding: 18p
 .pantalla.activa { display: block; animation: fadeIn 0.3s ease; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; border-top: 1px solid #eaeaea; padding-bottom: env(safe-area-inset-bottom); z-index: 100; box-shadow: 0 -2px 12px rgba(0,0,0,0.06); }
-.nav-item { flex: 1; text-align: center; padding: 16px 0; color: #b2bec3; cursor: pointer; font-size: 13px; font-weight: 900; display: flex; flex-direction: column; align-items: center; gap: 6px; transition: background 0.2s, color 0.2s; }
+.nav-item { flex: 1; text-align: center; padding: 16px 0; color: #b2bec3; cursor: pointer; font-size: 11px; font-weight: 900; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: background 0.2s, color 0.2s; }
 .nav-item.active { color: var(--primary); border-top: 4px solid var(--accent); background: #fafafa; }
-.nav-icon { font-size: 24px; }
+.nav-icon { font-size: 22px; }
 .hist-card { border-left: 6px solid var(--accent); cursor: pointer; transition: 0.2s; overflow: hidden; background: white; margin-bottom: 14px; border-radius: 12px; padding: 18px; box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
 .hist-header { display: flex; justify-content: space-between; align-items: center; }
 .hist-header .info { font-size: 15px; color: #555; }
@@ -85,6 +88,10 @@ button.cancel-btn, button.export-btn, button.gps-btn { width: 100%; padding: 18p
 .goal-bar-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.5s ease;}
 .zona-oro-btn { background: linear-gradient(90deg, #f1c40f 0%, #ffd700 100%); color: #1a1a1a !important; border: 2px solid #f1c40f; font-size: 17px; font-weight: 900; box-shadow: 0 2px 8px rgba(241,196,15,0.15); transition: background 0.3s, color 0.3s; padding: 14px 22px; border-radius: 14px; }
 .zona-oro-btn:hover { background: linear-gradient(90deg, #ffd700 0%, #f1c40f 100%); color: #d35400 !important; }
+
+/* ESTILOS DEL MAPA */
+#map { height: 60vh; width: 100%; border-radius: 14px; border: 2px solid #ddd; z-index: 1; }
+.leaflet-popup-content-wrapper { border-radius: 12px; }
 </style>
 </head>
 
@@ -206,6 +213,13 @@ button.cancel-btn, button.export-btn, button.gps-btn { width: 100%; padding: 18p
         <div id="lista-gastos" style="animation: fadeIn 0.5s; margin-top:18px;"></div>
     </div>
 
+    <div id="pantalla-mapa" class="pantalla">
+        <div class="card" style="padding: 10px;">
+            <div id="map"></div>
+            <div style="text-align:center; padding-top:15px; font-size:12px; color:#888;">Toca un punto para ver detalles o navegar</div>
+        </div>
+    </div>
+
     <div id="pantalla-historial" class="pantalla">
         <div class="card" style="background:var(--card-bg);border:var(--border);box-shadow:var(--shadow);">
             <div class="card-title"><span style="font-size:22px;">📑</span> Historial de Turnos</div>
@@ -230,7 +244,8 @@ button.cancel-btn, button.export-btn, button.gps-btn { width: 100%; padding: 18p
 <div class="bottom-nav">
     <div class="nav-item active" tabindex="0" aria-label="Cierre" onclick="verPantalla('registro', event)"><span class="nav-icon">🚕</span>Cierre</div>
     <div class="nav-item" tabindex="0" aria-label="Gastos" onclick="verPantalla('gastos', event)"><span class="nav-icon">💸</span>Gastos</div>
-    <div class="nav-item" tabindex="0" aria-label="Historial" onclick="verPantalla('historial', event)"><span class="nav-icon">📑</span>Historial</div>
+    <div class="nav-item" tabindex="0" aria-label="Mapa" onclick="verPantalla('mapa', event)"><span class="nav-icon">🗺️</span>Mapa</div>
+    <div class="nav-item" tabindex="0" aria-label="Historial" onclick="verPantalla('historial', event)"><span class="nav-icon">📑</span>Hist.</div>
     <div class="nav-item" tabindex="0" aria-label="Stats" onclick="verPantalla('resumen', event)"><span class="nav-icon">📊</span>Stats</div>
 </div>
 
@@ -250,13 +265,17 @@ document.querySelectorAll('button').forEach(btn => {
 
 document.querySelectorAll('input, select').forEach(el => { el.setAttribute('aria-label', el.name || el.id || 'input'); });
 
+// ¡AQUÍ ESTÁ TU URL EXACTA INTACTA!
 const scriptURL = "https://script.google.com/macros/s/AKfycbzATOQN3moS7g333R-MhH7DdRBKt8Om9-_SzEMLRmJy3CmxY5kdokht5BNxY2JCauE6/exec"; 
 
 let globalStats = null; 
 let historicoGlobal = []; 
 let gastosGlobal = [];
+let zonasGlobal = [];
 let estaEnviando = false; 
 let enviandoGasto = false; 
+let map = null;
+let markers = [];
 
 const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 const diasSemana = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
@@ -290,6 +309,12 @@ function verPantalla(p, ev) {
     if(p === 'historial') { document.getElementById('txtHeader').innerText = "📑 ÚLTIMOS TURNOS"; cargarDatos(); } 
     else if (p === 'resumen') { document.getElementById('txtHeader').innerText = "📊 ESTADÍSTICAS GLOBALES"; cargarDatos(); document.getElementById('goal-box').style.display='block';} 
     else if (p === 'gastos') { document.getElementById('txtHeader').innerText = "💸 CONTROL DE GASTOS"; document.getElementById('goal-box').style.display='none'; cargarDatos(); }
+    else if (p === 'mapa') { 
+        document.getElementById('txtHeader').innerText = "🗺️ MAPA DE ZONAS ORO"; 
+        document.getElementById('goal-box').style.display='none'; 
+        cargarDatos(); 
+        setTimeout(() => { if(map) map.invalidateSize(); }, 300); // Fix para renderizar bien el mapa al cambiar de pestaña
+    }
     else { document.getElementById('txtHeader').innerText = document.getElementById('form_action').value === 'edit' ? "✏️ EDITAR" : "🚕 CIERRE"; document.getElementById('goal-box').style.display='block';}
 }
 
@@ -311,13 +336,64 @@ function actualizarMetaVisual(brutoMes = 0) {
     }
 }
 
+// INICIALIZA Y RENDERIZA EL MAPA
+function initMap(zonas) {
+    if (!map) {
+        map = L.map('map').setView([40.4167, -3.7032], 6); // Centro de España por defecto
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+            attribution: '© OpenStreetMap contributors © CARTO'
+        }).addTo(map);
+    }
+    
+    markers.forEach(m => map.removeLayer(m));
+    markers = [];
+
+    if (zonas && zonas.length > 0) {
+        let bounds = [];
+        zonas.forEach(z => {
+            let marker = L.marker([z.lat, z.lng]).addTo(map);
+            
+            let d = new Date(z.fecha);
+            let hora = d.toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'});
+            let fechaSTR = d.toLocaleDateString('es-ES');
+            
+            let popupHtml = `
+                <div style="text-align:center; font-family:sans-serif;">
+                    <b style="color:#d4af37; font-size:14px;">🏆 ZONA ORO</b><br>
+                    <span style="color:#555; font-size:11px;">Guardada a las <b>${hora}</b></span><br>
+                    <span style="color:#888; font-size:10px;">El día ${fechaSTR}</span><br>
+                    <a href="${z.link}" target="_blank" style="display:block; margin:10px 0; background:#3498db; color:white; padding:8px; border-radius:8px; text-decoration:none; font-weight:bold; font-size:12px;">📍 Navegar Aquí</a>
+                    <button onclick="borrarZona('${z.id_zona}')" style="background:#e74c3c; color:white; border:none; padding:8px; border-radius:8px; cursor:pointer; width:100%; font-weight:bold; font-size:12px;">🗑️ Eliminar Zona</button>
+                </div>
+            `;
+            marker.bindPopup(popupHtml);
+            markers.push(marker);
+            bounds.push([z.lat, z.lng]);
+        });
+        if (bounds.length > 0) map.fitBounds(bounds, {padding: [20, 20]});
+    }
+}
+
+// BORRAR ZONA ORO
+function borrarZona(id_zona) {
+    if(confirm("¿Seguro que quieres borrar esta Zona Oro del mapa?")) {
+        fetch(scriptURL, { method: "POST", mode: "no-cors", body: new URLSearchParams({action: 'delete_zona', id_zona: id_zona, token: '661564839'}) })
+        .then(() => { alert("🗑️ Zona eliminada. Refrescando datos..."); cargarDatos(); })
+        .catch(() => { alert("Error al eliminar"); });
+    }
+}
+
 function cargarDatos() {
     const lh = document.getElementById('lista-historial');
     if(lh.innerHTML === "") lh.innerHTML = '<div style="text-align:center; padding:30px; color:#888;">Sincronizando la nube... ⏳</div>';
 
     fetch(scriptURL + "?token=661564839&t=" + new Date().getTime()).then(res => res.json()).then(data => {
         
-        lh.innerHTML = ""; historicoGlobal = data.history || []; gastosGlobal = data.gastos || [];
+        lh.innerHTML = ""; historicoGlobal = data.history || []; gastosGlobal = data.gastos || []; zonasGlobal = data.zonas || [];
+        
+        // PINTAMOS EL MAPA CON LAS ZONAS RECIBIDAS
+        initMap(zonasGlobal);
+
         if(historicoGlobal.length === 0) lh.innerHTML = '<div style="text-align:center; padding:30px;">Sin datos.</div>';
         else {
             historicoGlobal.forEach(t => {
@@ -444,9 +520,9 @@ function registrarZonaCaliente() {
     
     navigator.geolocation.getCurrentPosition(pos => {
         fetch(scriptURL, { method: "POST", mode: "no-cors", body: new URLSearchParams({action: 'zona', lat: pos.coords.latitude, lng: pos.coords.longitude, token: '661564839'}) })
-        .then(() => { alert("📍 ¡ZONA ORO GUARDADA!"); btn.innerText = "📍 ZONA GUARDADA"; setTimeout(()=> {btn.innerText = "📍 ZONA ORO"; btn.disabled=false;}, 3000); })
-        .catch(() => { alert("Error al guardar."); btn.disabled = false; btn.innerText = "📍 ZONA ORO"; });
-    }, err => { alert("Activa el GPS del móvil."); btn.disabled = false; btn.innerText = "📍 ZONA ORO"; }, {enableHighAccuracy: true});
+        .then(() => { alert("📍 ¡ZONA ORO GUARDADA!"); btn.innerText = "📍 ZONA GUARDADA"; setTimeout(()=> {btn.innerText = "🏆 ZONA ORO"; btn.disabled=false;}, 3000); })
+        .catch(() => { alert("Error al guardar."); btn.disabled = false; btn.innerText = "🏆 ZONA ORO"; });
+    }, err => { alert("Activa el GPS del móvil."); btn.disabled = false; btn.innerText = "🏆 ZONA ORO"; }, {enableHighAccuracy: true});
 }
 
 function editarTurno(id) {
@@ -474,7 +550,6 @@ function cancelarEdicion() {
 document.getElementById("taxiForm").addEventListener("submit", e => {
     e.preventDefault(); if(estaEnviando) return; estaEnviando = true; 
     
-    // FIX ANTIDUPLICADOS: Solo genera el ID si está vacío, así si hay fallo de red, se reintenta el mismo ID
     let inputId = document.getElementById("id_tx");
     if (document.getElementById("form_action").value === "new" && !inputId.value) {
         inputId.value = Date.now() + "-" + Math.floor(Math.random()*1000);
@@ -486,7 +561,7 @@ document.getElementById("taxiForm").addEventListener("submit", e => {
         alert("✅ Turno completado."); 
         cancelarEdicion(); 
         estaEnviando = false; 
-        document.querySelectorAll('.nav-item')[2].click(); 
+        document.querySelectorAll('.nav-item')[3].click(); // Redirige al historial (ahora en la posición 3)
     }).catch(() => { 
         alert("❌ Error de red al enviar. Vuelve a intentarlo."); 
         b.disabled = false; 
@@ -499,7 +574,6 @@ document.getElementById("taxiForm").addEventListener("submit", e => {
 document.getElementById("gastosForm").addEventListener("submit", e => {
     e.preventDefault(); if(enviandoGasto) return; enviandoGasto = true;
     
-    // FIX ANTIDUPLICADOS GASTOS: Solo genera el ID si está vacío, manteniendo el mismo en caso de reintento.
     let inputIdGasto = document.getElementById("id_tx_gasto");
     if (!inputIdGasto.value) {
         inputIdGasto.value = "G-" + Date.now() + "-" + Math.floor(Math.random()*1000);
@@ -510,12 +584,12 @@ document.getElementById("gastosForm").addEventListener("submit", e => {
     fetch(scriptURL, { method: "POST", mode: "no-cors", body: new URLSearchParams(new FormData(e.target))}).then(() => { 
         alert("💸 Gasto añadido correctamente."); 
         document.getElementById("gastosForm").reset(); 
-        inputIdGasto.value = ""; // Limpiar el ID solo cuando tengamos éxito
+        inputIdGasto.value = ""; 
         setDateTime();
         b.disabled = false; 
         b.innerText = "💸 REGISTRAR GASTO"; 
         enviandoGasto = false; 
-        document.querySelectorAll('.nav-item')[3].click();
+        document.querySelectorAll('.nav-item')[4].click(); // Redirige a las Stats (ahora en la posición 4)
     }).catch(() => { 
         alert("❌ Error de red al enviar el gasto. Vuelve a intentarlo."); 
         b.disabled = false; 
@@ -524,9 +598,6 @@ document.getElementById("gastosForm").addEventListener("submit", e => {
     });
 });
 
-// ==============================================================
-// REGISTRO DEL SERVICE WORKER (PARA QUE SEA UNA APP PWA)
-// ==============================================================
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
